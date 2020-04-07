@@ -5,14 +5,14 @@ pub mod tuple;
 
 #[derive(Debug, Copy, Clone)]
 struct Projectile {
-    pub position: tuple::Tuple,
-    pub velocity: tuple::Tuple,
+    pub position: tuple::Point,
+    pub velocity: tuple::Vector,
 }
 
 #[derive(Debug, Copy, Clone)]
 struct Environment {
-    pub gravity: tuple::Tuple,
-    pub wind: tuple::Tuple,
+    pub gravity: tuple::Vector,
+    pub wind: tuple::Vector,
 }
 
 fn tick(env: Environment, proj: Projectile) -> Projectile {
