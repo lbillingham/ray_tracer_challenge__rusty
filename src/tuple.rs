@@ -235,6 +235,22 @@ mod tests {
         assert!(a[2] == 100.0);
         assert!(a[3] == -1000.0);
     }
+
+    #[test]
+    fn vectors_have_a_method_for_dot_product() {
+        let v1 = vector(1., 2., 3.);
+        let v2 = vector(2., 3., 4.);
+        assert!(v1.dot(v2) == 20.);
+        assert!(v2.dot(v1) == 20.);
+    }
+
+    #[test]
+    fn can_dot_product_2_vectors_via_function() {
+        let v1 = vector(1., 2., 3.);
+        let v2 = vector(2., 3., 4.);
+        assert!(dot(v1, v2) == 20.);
+        assert!(dot(v2, v1) == 20.);
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -274,6 +290,10 @@ impl Tuple {
                 w
             ),
         }
+    }
+
+    pub fn dot(self: Tuple, other: Tuple) -> f64 {
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 }
 
@@ -418,4 +438,8 @@ pub fn magnitude(v: Tuple) -> f64 {
 
 pub fn normalize(v: Tuple) -> Tuple {
     v.normalize()
+}
+
+pub fn dot(v1: Tuple, v2: Tuple) -> f64 {
+    v1.dot(v2)
 }
