@@ -1,6 +1,7 @@
 use std::cmp::PartialEq;
 use std::f64;
 use std::ops::Add;
+use std::ops::Div;
 use std::ops::Mul;
 use std::ops::Neg;
 use std::ops::Sub;
@@ -152,10 +153,24 @@ mod tests {
     }
 
     #[test]
+    fn it_can_be_right_multipled_by_a_fractional_scalar_f64() {
+        let a = tuple(1.0, -2.0, 3.0, -4.0);
+        let expected = tuple(0.5, -1., 1.5, -2.0);
+        assert!(a * 0.5 == expected);
+    }
+
+    #[test]
     fn it_can_be_left_multipled_by_a_scalar_f64() {
         let a = tuple(1.0, -2.0, 3.0, -4.0);
         let expected = tuple(3.5, -7.0, 10.5, -14.0);
         assert!(3.5 * a == expected);
+    }
+
+    #[test]
+    fn it_can_be_divided_by_a_scalar_f64() {
+        let a = tuple(1.0, -2.0, 3.0, -4.0);
+        let expected = tuple(0.5, -1.0, 1.5, -2.0);
+        assert!(a / 2.0 == expected);
     }
 }
 
@@ -255,6 +270,18 @@ impl Mul<Tuple> for f64 {
     }
 }
 
+impl Div<f64> for Tuple {
+    type Output = Tuple;
+    fn div(self, scalar: f64) -> Tuple {
+        let inverted_scalar = 1.0 / scalar;
+        tuple(
+            self.x * inverted_scalar,
+            self.y * inverted_scalar,
+            self.z * inverted_scalar,
+            self.w * inverted_scalar,
+        )
+    }
+}
 fn tuple(x: f64, y: f64, z: f64, w: f64) -> Tuple {
     Tuple {
         x: x,
