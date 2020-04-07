@@ -1,6 +1,8 @@
 use std::cmp::PartialEq;
 use std::f64;
 use std::ops::Add;
+use std::ops::Neg;
+use std::ops::Sub;
 
 #[cfg(test)]
 mod tests {
@@ -40,11 +42,24 @@ mod tests {
     }
 
     #[test]
-    fn it_can_be_instantiated_vai_vector_point() {
+    fn it_can_be_instantiated_via_vector_point() {
         let avec = vector(4.0, -4.0, 3.0);
         let ref_tuple = tuple(4.0, -4.0, 3.0, 0.0);
         assert!(avec.is_vector());
         assert!(avec == ref_tuple);
+    }
+    #[test]
+    fn given_w_is_1_it_is_a_point_and_not_a_vector() {
+        let a = tuple(4.3, -4.2, 3.1, 1.0);
+        assert!(a.is_point());
+        assert!(!a.is_vector());
+    }
+
+    #[test]
+    fn given_w_is_0_it_is_a_vector_and_not_a_point() {
+        let a = tuple(4.3, -4.2, 3.1, 0.0);
+        assert!(a.is_vector());
+        assert!(!a.is_point());
     }
 
     #[test]
@@ -58,7 +73,7 @@ mod tests {
     }
 
     #[test]
-    fn can_add_a_vector_to_a_vector() {
+    fn can_add_2_vectors() {
         let v1 = vector(3.0, -2.0, 5.0);
         let v2 = vector(-2.0, 3.0, 1.0);
         let expected = tuple(1., 1., 6., 0.);
@@ -70,24 +85,62 @@ mod tests {
     #[test]
     #[should_panic]
     #[allow(unused)]
-    fn panics_if_try_to_add_a_point_to_a_point() {
+    fn cannot_add_2_points_it_panics() {
         let p1 = point(3.0, -2.0, 5.0);
         let p2 = point(-2.0, 3.0, 1.0);
         p1 + p2;
     }
 
     #[test]
-    fn given_w_is_1_it_is_a_point_and_not_a_vector() {
-        let a = tuple(4.3, -4.2, 3.1, 1.0);
-        assert!(a.is_point());
-        assert!(!a.is_vector());
+    fn can_subtract_2_points() {
+        let p1 = point(3.0, 2.0, 1.0);
+        let p2 = point(5.0, 6.0, 7.0);
+        let expected = vector(-2., -4., -6.);
+        assert_eq!(p1 - p2, expected);
+        assert!((p1 - p2).is_vector());
     }
 
     #[test]
-    fn given_w_is_0_it_is_a_vector_and_not_a_point() {
-        let a = tuple(4.3, -4.2, 3.1, 0.0);
-        assert!(a.is_vector());
-        assert!(!a.is_point());
+    fn can_subtract_a_vector_from_a_point() {
+        let p1 = point(3.0, 2.0, 1.0);
+        let v2 = vector(5.0, 6.0, 7.0);
+        let expected = point(-2., -4., -6.);
+        assert_eq!(p1 - v2, expected);
+        assert!((p1 - v2).is_point());
+    }
+
+    #[test]
+    fn can_subtract_2_vectors() {
+        let v1 = vector(3.0, 2.0, 1.0);
+        let v2 = vector(5.0, 6.0, 7.0);
+        let expected = vector(-2., -4., -6.);
+        assert_eq!(v1 - v2, expected);
+        assert!((v1 - v2).is_vector());
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_subtract_a_point_from_a_vector_it_panics() {
+        let v1 = vector(3.0, -2.0, 5.0);
+        let p2 = point(-2.0, 3.0, 1.0);
+        v1 - p2;
+    }
+
+    #[test]
+    fn can_subtract_a_vector_from_0_vector() {
+        let v0 = vector(0.0, 0.0, 0.0);
+        let v2 = vector(1.0, -2.0, 3.0);
+        let expected = vector(-1., 2., -3.);
+        assert_eq!(v0 - v2, expected);
+        assert!((v0 - v2).is_vector());
+    }
+
+    #[test]
+    fn it_can_be_negated() {
+        let a = tuple(1.0, -2.0, 3.0, -4.0);
+        let expected = tuple(-1., 2., -3., 4.0);
+        assert_eq!(-a, expected);
     }
 }
 
@@ -139,6 +192,32 @@ impl Add for Tuple {
             ),
             _ => panic!("cannot add point to point, 0<= w <=1 but here w={}", w),
         }
+    }
+}
+
+impl Sub for Tuple {
+    type Output = Tuple;
+    fn sub(self, other: Tuple) -> Tuple {
+        let w = self.w - other.w;
+        match w {
+            w if w.in_oo_range(0.0, 1.0) => tuple(
+                self.x - other.x,
+                self.y - other.y,
+                self.z - other.z,
+                self.w - other.w,
+            ),
+            _ => panic!(
+                "cannot subtract point from vector, 0<= w <=1 but here w={}",
+                w
+            ),
+        }
+    }
+}
+
+impl Neg for Tuple {
+    type Output = Tuple;
+    fn neg(self) -> Tuple {
+        tuple(-self.x, -self.y, -self.z, -self.w)
     }
 }
 
