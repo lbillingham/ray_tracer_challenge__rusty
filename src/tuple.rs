@@ -232,7 +232,7 @@ impl Sub for Tuple {
 impl Neg for Tuple {
     type Output = Tuple;
     fn neg(self) -> Tuple {
-        tuple(-self.x, -self.y, -self.z, -self.w)
+        -1.0 * self
     }
 }
 
