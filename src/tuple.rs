@@ -174,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn it_can_have_its_magnitude_computed_by_function() {
+    fn vectors_can_their_magnitude_computed_by_function() {
         assert!(magnitude(vector(1., 0., 0.)) == 1.);
         assert!(magnitude(vector(0., 1., 0.)) == 1.);
         assert!(magnitude(vector(0., 0., 1.)) == 1.);
@@ -183,12 +183,32 @@ mod tests {
     }
 
     #[test]
-    fn it_can_has_a_magnitude_method() {
+    fn vectors_have_a_magnitude_method() {
         assert!(vector(1., 0., 0.).magnitude() == 1.);
         assert!(vector(0., 1., 0.).magnitude() == 1.);
         assert!(vector(0., 0., 1.).magnitude() == 1.);
         assert!(vector(1., 2., 3.).magnitude() == f64::sqrt(14.0));
         assert!(vector(-1., -2., -3.).magnitude() == f64::sqrt(14.0));
+    }
+
+    #[test]
+    fn vectors_have_a_normalize_method() {
+        assert!(vector(4., 0., 0.).normalize() == vector(1.0, 0.0, 0.0));
+        let len_expect = f64::sqrt(14.0);
+        assert!(
+            vector(1., 2., 3.).normalize()
+                == vector(1.0 / len_expect, 2.0 / len_expect, 3.0 / len_expect)
+        )
+    }
+
+    #[test]
+    fn vectors_can_be_normalized_by_function() {
+        assert!(normalize(vector(4., 0., 0.)) == vector(1., 0., 0.));
+        let len_expect = f64::sqrt(14.0);
+        assert!(
+            normalize(vector(1., 2., 3.))
+                == vector(1.0 / len_expect, 2.0 / len_expect, 3.0 / len_expect)
+        );
     }
 }
 
@@ -215,6 +235,17 @@ impl Tuple {
             w if w == 0.0 => f64::sqrt(self.x * self.x + self.y * self.y + self.z * self.z),
             _ => panic!(
                 "cannot take magnitude of a point, w should == 0 but here w={}",
+                w
+            ),
+        }
+    }
+
+    pub fn normalize(self) -> Tuple {
+        let w = self.w;
+        match w {
+            w if w == 0.0 => self / self.magnitude(),
+            _ => panic!(
+                "cannot take normalize a point, w should == 0 but here w={}",
                 w
             ),
         }
@@ -341,4 +372,8 @@ pub fn vector(x: f64, y: f64, z: f64) -> Tuple {
 
 pub fn magnitude(v: Tuple) -> f64 {
     v.magnitude()
+}
+
+pub fn normalize(v: Tuple) -> Tuple {
+    v.normalize()
 }
