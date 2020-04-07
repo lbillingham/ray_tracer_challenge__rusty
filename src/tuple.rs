@@ -278,6 +278,48 @@ mod tests {
         let v2 = vector(-2.0, 3.0, 1.0);
         dot(p1, v2);
     }
+    #[test]
+    fn vectors_have_a_method_for_cross_product() {
+        let v1 = vector(1., 2., 3.);
+        let v2 = vector(2., 3., 4.);
+        assert!(v1.cross(v2) == vector(-1., 2., -1.));
+        assert!(v2.cross(v1) == vector(1., -2., 1.));
+    }
+
+    #[test]
+    fn can_cross_product_2_vectors_via_function() {
+        let v1 = vector(1., 2., 3.);
+        let v2 = vector(2., 3., 4.);
+        assert!(cross(v1, v2) == vector(-1., 2., -1.));
+        assert!(cross(v2, v1) == vector(1., -2., 1.));
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_cross_2_points_it_panics() {
+        let p1 = point(-2.0, 3.0, 1.0);
+        let p2 = point(2.0, -13.0, 21.0);
+        cross(p1, p2);
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_cross_a_point_and_a_vector_it_panics() {
+        let v1 = vector(-2.0, 3.0, 1.0);
+        let p2 = point(2.0, -13.0, 21.0);
+        cross(v1, p2);
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_cross_a_vector_and_a_point_it_panics() {
+        let p1 = point(2.0, -13.0, 21.0);
+        let v2 = vector(-2.0, 3.0, 1.0);
+        cross(p1, v2);
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -330,10 +372,14 @@ impl Tuple {
         }
     }
 
-    pub fn cross(self: Tuple, other: Tuple) -> f64 {
+    pub fn cross(self: Tuple, other: Tuple) -> Tuple {
         let w = self.w + other.w;
         match w {
-            w if w == 0.0 => self.x * other.x + self.y * other.y + self.z * other.z,
+            w if w == 0.0 => vector(
+                self.y * other.z - self.z * other.y,
+                self.z * other.x - self.x * other.z,
+                self.x * other.y - self.y * other.x,
+            ),
             _ => panic!(
                 "cannot take dot product points, w should == 0 for self and other but here w={}",
                 w
@@ -487,4 +533,8 @@ pub fn normalize(v: Tuple) -> Tuple {
 
 pub fn dot(v1: Tuple, v2: Tuple) -> f64 {
     v1.dot(v2)
+}
+
+pub fn cross(v1: Tuple, v2: Tuple) -> Tuple {
+    v1.cross(v2)
 }
