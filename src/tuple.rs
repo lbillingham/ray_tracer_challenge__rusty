@@ -251,6 +251,33 @@ mod tests {
         assert!(dot(v1, v2) == 20.);
         assert!(dot(v2, v1) == 20.);
     }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_dot_2_points_it_panics() {
+        let p1 = point(-2.0, 3.0, 1.0);
+        let p2 = point(2.0, -13.0, 21.0);
+        dot(p1, p2);
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_dot_a_point_and_a_vector_it_panics() {
+        let v1 = vector(-2.0, 3.0, 1.0);
+        let p2 = point(2.0, -13.0, 21.0);
+        dot(v1, p2);
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_dot_a_vector_and_a_point_it_panics() {
+        let p1 = point(2.0, -13.0, 21.0);
+        let v2 = vector(-2.0, 3.0, 1.0);
+        dot(p1, v2);
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -293,13 +320,20 @@ impl Tuple {
     }
 
     pub fn dot(self: Tuple, other: Tuple) -> f64 {
-        self.x * other.x + self.y * other.y + self.z * other.z
+        let w = self.w + other.w;
+        match w {
+            w if w == 0.0 => self.x * other.x + self.y * other.y + self.z * other.z,
+            _ => panic!(
+                "cannot take dot product points, w should == 0 for self and other but here w={}",
+                w
+            ),
+        }
     }
 }
 
 impl PartialEq for Tuple {
     fn eq(&self, other: &Tuple) -> bool {
-        self.x == other.x && self.y == other.y && self.z == other.z
+        self.x == other.x && self.y == other.y && self.z == other.z && self.w == other.w
     }
 }
 // Should not derive Eq as our f64's could be NaN-y and NaN != NaN
