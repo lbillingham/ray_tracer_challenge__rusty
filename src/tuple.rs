@@ -192,6 +192,14 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_take_magnitude_of_a_point_it_panics() {
+        let p = point(2.0, 3.0, 1.0);
+        magnitude(p);
+    }
+
+    #[test]
     fn vectors_have_a_normalize_method() {
         assert!(vector(4., 0., 0.).normalize() == vector(1.0, 0.0, 0.0));
         let len_expect = f64::sqrt(14.0);
@@ -209,6 +217,23 @@ mod tests {
             normalize(vector(1., 2., 3.))
                 == vector(1.0 / len_expect, 2.0 / len_expect, 3.0 / len_expect)
         );
+    }
+
+    #[test]
+    #[should_panic]
+    #[allow(unused)]
+    fn cannot_normalize_a_point_it_panics() {
+        let p = point(-2.0, 3.0, 1.0);
+        normalize(p);
+    }
+
+    #[test]
+    fn it_can_be_indexed_like_an_array() {
+        let a = tuple(0.0, -10.0, 100.0, -1000.0);
+        assert!(a[0] == 0.0);
+        assert!(a[1] == -10.0);
+        assert!(a[2] == 100.0);
+        assert!(a[3] == -1000.0);
     }
 }
 
@@ -340,6 +365,23 @@ impl Div<f64> for Tuple {
             self.z * inverted_scalar,
             self.w * inverted_scalar,
         )
+    }
+}
+
+impl std::ops::Index<usize> for Tuple {
+    type Output = f64;
+
+    fn index(&self, index: usize) -> &f64 {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            3 => &self.w,
+            _ => panic!(
+                "Unknown value {} for index found: must be in 0, 1, 2, 3",
+                index
+            ),
+        }
     }
 }
 
