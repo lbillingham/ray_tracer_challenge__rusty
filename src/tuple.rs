@@ -1,6 +1,7 @@
 use std::cmp::PartialEq;
 use std::f64;
 use std::ops::Add;
+use std::ops::Mul;
 use std::ops::Neg;
 use std::ops::Sub;
 
@@ -142,6 +143,20 @@ mod tests {
         let expected = tuple(-1., 2., -3., 4.0);
         assert_eq!(-a, expected);
     }
+
+    #[test]
+    fn it_can_be_right_multipled_by_a_scalar_f64() {
+        let a = tuple(1.0, -2.0, 3.0, -4.0);
+        let expected = tuple(3.5, -7.0, 10.5, -14.0);
+        assert!(a * 3.5 == expected);
+    }
+
+    #[test]
+    fn it_can_be_left_multipled_by_a_scalar_f64() {
+        let a = tuple(1.0, -2.0, 3.0, -4.0);
+        let expected = tuple(3.5, -7.0, 10.5, -14.0);
+        assert!(3.5 * a == expected);
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -218,6 +233,25 @@ impl Neg for Tuple {
     type Output = Tuple;
     fn neg(self) -> Tuple {
         tuple(-self.x, -self.y, -self.z, -self.w)
+    }
+}
+
+impl Mul<f64> for Tuple {
+    type Output = Tuple;
+    fn mul(self, scalar: f64) -> Tuple {
+        tuple(
+            self.x * scalar,
+            self.y * scalar,
+            self.z * scalar,
+            self.w * scalar,
+        )
+    }
+}
+
+impl Mul<Tuple> for f64 {
+    type Output = Tuple;
+    fn mul(self, tup: Tuple) -> Tuple {
+        tup * self
     }
 }
 
