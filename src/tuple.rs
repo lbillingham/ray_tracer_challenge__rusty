@@ -172,6 +172,24 @@ mod tests {
         let expected = tuple(0.5, -1.0, 1.5, -2.0);
         assert!(a / 2.0 == expected);
     }
+
+    #[test]
+    fn it_can_have_its_magnitude_computed_by_function() {
+        assert!(magnitude(vector(1., 0., 0.)) == 1.);
+        assert!(magnitude(vector(0., 1., 0.)) == 1.);
+        assert!(magnitude(vector(0., 0., 1.)) == 1.);
+        assert!(magnitude(vector(1., 2., 3.)) == f64::sqrt(14.0));
+        assert!(magnitude(vector(-1., -2., -3.)) == f64::sqrt(14.0));
+    }
+
+    #[test]
+    fn it_can_has_a_magnitude_method() {
+        assert!(vector(1., 0., 0.).magnitude() == 1.);
+        assert!(vector(0., 1., 0.).magnitude() == 1.);
+        assert!(vector(0., 0., 1.).magnitude() == 1.);
+        assert!(vector(1., 2., 3.).magnitude() == f64::sqrt(14.0));
+        assert!(vector(-1., -2., -3.).magnitude() == f64::sqrt(14.0));
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -189,6 +207,17 @@ impl Tuple {
 
     pub fn is_vector(self) -> bool {
         abs_diff_eq!(self.w, 0.0)
+    }
+
+    pub fn magnitude(self) -> f64 {
+        let w = self.w;
+        match w {
+            w if w == 0.0 => f64::sqrt(self.x * self.x + self.y * self.y + self.z * self.z),
+            _ => panic!(
+                "cannot take magnitude of a point, w should == 0 but here w={}",
+                w
+            ),
+        }
     }
 }
 
@@ -282,7 +311,8 @@ impl Div<f64> for Tuple {
         )
     }
 }
-fn tuple(x: f64, y: f64, z: f64, w: f64) -> Tuple {
+
+pub fn tuple(x: f64, y: f64, z: f64, w: f64) -> Tuple {
     Tuple {
         x: x,
         y: y,
@@ -291,7 +321,7 @@ fn tuple(x: f64, y: f64, z: f64, w: f64) -> Tuple {
     }
 }
 
-fn point(x: f64, y: f64, z: f64) -> Tuple {
+pub fn point(x: f64, y: f64, z: f64) -> Tuple {
     Tuple {
         x: x,
         y: y,
@@ -300,11 +330,15 @@ fn point(x: f64, y: f64, z: f64) -> Tuple {
     }
 }
 
-fn vector(x: f64, y: f64, z: f64) -> Tuple {
+pub fn vector(x: f64, y: f64, z: f64) -> Tuple {
     Tuple {
         x: x,
         y: y,
         z: z,
         w: 0.0,
     }
+}
+
+pub fn magnitude(v: Tuple) -> f64 {
+    v.magnitude()
 }
