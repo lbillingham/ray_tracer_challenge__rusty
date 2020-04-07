@@ -300,7 +300,7 @@ impl Tuple {
     pub fn magnitude(self) -> f64 {
         let w = self.w;
         match w {
-            w if w == 0.0 => f64::sqrt(self.x * self.x + self.y * self.y + self.z * self.z),
+            w if w == 0.0 => f64::sqrt(self.dot(self)),
             _ => panic!(
                 "cannot take magnitude of a point, w should == 0 but here w={}",
                 w
@@ -320,6 +320,17 @@ impl Tuple {
     }
 
     pub fn dot(self: Tuple, other: Tuple) -> f64 {
+        let w = self.w + other.w;
+        match w {
+            w if w == 0.0 => self.x * other.x + self.y * other.y + self.z * other.z,
+            _ => panic!(
+                "cannot take dot product points, w should == 0 for self and other but here w={}",
+                w
+            ),
+        }
+    }
+
+    pub fn cross(self: Tuple, other: Tuple) -> f64 {
         let w = self.w + other.w;
         match w {
             w if w == 0.0 => self.x * other.x + self.y * other.y + self.z * other.z,
