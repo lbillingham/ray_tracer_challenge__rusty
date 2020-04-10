@@ -1,17 +1,13 @@
+use crate::f64_helpers::EPS;
 use std::cmp::PartialEq;
 use std::f64;
-use std::ops::Add;
-use std::ops::Div;
-use std::ops::Index;
-use std::ops::Mul;
-use std::ops::Neg;
-use std::ops::Sub;
-
-const EPS: f64 = f64::EPSILON;
+use std::ops::{Add, Div, Index, Mul, Neg, Sub};
 
 #[cfg(test)]
 mod tests_for_point {
-    use super::*;
+    use crate::f64_helpers::EPS;
+    use crate::tuple::point;
+    use crate::tuple::vector;
 
     #[test]
     fn it_can_be_accessed_by_components() {
@@ -117,6 +113,8 @@ mod tests_for_point {
 #[cfg(test)]
 mod tests_for_vector {
     use super::*;
+    use crate::f64_helpers::EPS;
+    use crate::tuple::vector;
 
     #[test]
     fn it_can_be_accessed_by_components() {
@@ -299,79 +297,6 @@ mod tests_for_vector {
     }
 }
 
-// #[derive(Debug, Copy, Clone)]
-// pub struct Tuple {
-//     pub x: f64,
-//     pub y: f64,
-//     pub z: f64,
-//     pub w: f64,
-// }
-
-// impl Tuple {
-//     pub fn is_point(self) -> bool {
-//         abs_diff_eq!(self.w, 1.0)
-//     }
-
-//     pub fn is_vector(self) -> bool {
-//         abs_diff_eq!(self.w, 0.0)
-//     }
-
-//     pub fn magnitude(self) -> f64 {
-//         let w = self.w;
-//         match w {
-//             w if w == 0.0 => f64::sqrt(self.dot(self)),
-//             _ => panic!(
-//                 "cannot take magnitude of a point, w should == 0 but here w={}",
-//                 w
-//             ),
-//         }
-//     }
-
-//     pub fn normalize(self) -> Tuple {
-//         let w = self.w;
-//         match w {
-//             w if w == 0.0 => self / self.magnitude(),
-//             _ => panic!(
-//                 "cannot take normalize a point, w should == 0 but here w={}",
-//                 w
-//             ),
-//         }
-//     }
-
-//     pub fn dot(self: Tuple, other: Tuple) -> f64 {
-//         let w = self.w + other.w;
-//         match w {
-//             w if w == 0.0 => self.x * other.x + self.y * other.y + self.z * other.z,
-//             _ => panic!(
-//                 "cannot take dot product points, w should == 0 for self and other but here w={}",
-//                 w
-//             ),
-//         }
-//     }
-
-//     pub fn cross(self: Tuple, other: Tuple) -> Tuple {
-//         let w = self.w + other.w;
-//         match w {
-//             w if w == 0.0 => vector(
-//                 self.y * other.z - self.z * other.y,
-//                 self.z * other.x - self.x * other.z,
-//                 self.x * other.y - self.y * other.x,
-//             ),
-//             _ => panic!(
-//                 "cannot take dot product points, w should == 0 for self and other but here w={}",
-//                 w
-//             ),
-//         }
-//     }
-// }
-
-// impl PartialEq for Tuple {
-//     fn eq(&self, other: &Tuple) -> bool {
-//         self.x == other.x && self.y == other.y && self.z == other.z && self.w == other.w
-//     }
-// }
-// Should not derive Eq as our f64's could be NaN-y and NaN != NaN
-
 #[derive(Debug, Copy, Clone)]
 pub struct Point {
     pub x: f64,
@@ -391,7 +316,9 @@ impl Point {
 
 impl PartialEq for Point {
     fn eq(&self, other: &Point) -> bool {
-        self.x == other.x && self.y == other.y && self.z == other.z
+        abs_diff_eq!(self.x, other.x, epsilon = EPS)
+            && abs_diff_eq!(self.y, other.y, epsilon = EPS)
+            && abs_diff_eq!(self.z, other.z, epsilon = EPS)
     }
 }
 // Should not derive Eq as our f64's could be NaN-y and NaN != NaN

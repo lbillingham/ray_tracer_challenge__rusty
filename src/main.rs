@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate approx;
 
+pub mod color;
+pub mod f64_helpers;
 pub mod tuple;
 
 #[derive(Debug, Copy, Clone)]
