@@ -138,3 +138,33 @@ pub fn color(red: f64, green: f64, blue: f64) -> Color {
         blue: blue,
     }
 }
+
+pub const BLACK: Color = Color {
+    red: 0.,
+    green: 0.,
+    blue: 0.,
+};
+
+pub const WHITE: Color = Color {
+    red: 1.,
+    green: 1.,
+    blue: 1.,
+};
+
+pub const RED: Color = Color {
+    red: 1.,
+    green: 0.,
+    blue: 0.,
+};
+
+pub const GREEN: Color = Color {
+    red: 0.,
+    green: 1.,
+    blue: 0.,
+};
+
+pub const BLUE: Color = Color {
+    red: 0.,
+    green: 0.,
+    blue: 1.,
+};
