@@ -8,8 +8,8 @@ mod tests_for_canvas {
     #[test]
     fn it_can_be_instatiated_with_a_width_and_height() {
         let c = canvas(10, 20);
-        assert!(c.width == 10);
-        assert!(c.height == 20);
+        assert_eq!(c.width, 10);
+        assert_eq!(c.height, 20);
         for column in c.pixels {
             for pixel in column {
                 assert_eq!(pixel, BLACK);
@@ -34,7 +34,7 @@ mod tests_for_canvas {
         let mut c = canvas(10, 20);
         c[2][3] = RED;
         assert_eq!(c[2][3], RED);
-        assert_eq!(pixel_at(c, 3, 2), BLACK);
+        assert_eq!(pixel_at(c, 2, 3), RED);
     }
 
     #[test]
@@ -42,7 +42,7 @@ mod tests_for_canvas {
         let mut c = canvas(10, 20);
         write_pixel(&mut c, 2, 3, RED);
         assert_eq!(c[2][3], RED);
-        // assert_eq!(pixel_at(c, 2, 3), RED);
+        assert_eq!(pixel_at(c, 2, 3), RED);
     }
 }
 
@@ -75,10 +75,9 @@ pub fn canvas(width: usize, height: usize) -> Canvas {
 }
 
 pub fn pixel_at(canvas: Canvas, column_index: usize, row_index: usize) -> Color {
-    canvas[row_index][column_index]
+    canvas[column_index][row_index]
 }
 
-pub fn write_pixel(canvas: &mut Canvas, row_index: usize, column_index: usize, color: Color) {
-    canvas[row_index][column_index] = color
-    // canvas[column_index][row_index] = color
+pub fn write_pixel(canvas: &mut Canvas, column_index: usize, row_index: usize, color: Color) {
+    canvas[column_index][row_index] = color
 }
