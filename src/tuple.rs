@@ -259,6 +259,11 @@ mod tests_for_vector {
     }
 
     #[test]
+    fn it_can_be_normalized_if_it_is_0() {
+        assert!(vector(0., 0., 0.).normalize() == vector(0.0, 0.0, 0.0));
+    }
+
+    #[test]
     fn it_can_be_indexed_like_an_array() {
         let a = vector(0.0, -10.0, 100.0);
         assert!(a[0] == 0.0);
@@ -494,7 +499,11 @@ impl Vector {
     }
 
     pub fn normalize(self) -> Vector {
-        self / self.magnitude()
+        if self.magnitude() > 0.0 {
+            self / self.magnitude()
+        } else {
+            self
+        }
     }
 
     pub fn dot(self: Vector, other: Vector) -> f64 {
